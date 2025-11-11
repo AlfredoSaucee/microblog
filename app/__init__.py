@@ -23,6 +23,8 @@ login.login_message = 'Please log in to access this page.'
 bootstrap = Bootstrap()
 moment = Moment()
 
+# Testar git commit template
+
 
 def create_app(config_class=ProdConfig):
     """
