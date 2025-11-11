@@ -1,0 +1,26 @@
+# syntax=docker/dockerfile:1.4
+FROM python:3.12-alpine
+RUN adduser -D microblog
+
+WORKDIR /home/microblog
+
+# Kopiera endast nödvändiga filer för testning
+COPY requirements requirements
+COPY requirements.txt microblog.py Makefile pytest.ini .coveragerc .pylintrc ./
+COPY test.sh ./
+
+
+RUN apk --no-cache add make \
+  && python -m venv .venv \
+  && .venv/bin/pip install --upgrade pip \
+  && .venv/bin/pip install -r requirements/test.txt
+
+ENV FLASK_APP=microblog.py
+
+RUN chmod +x test.sh && chown -R microblog:microblog ./
+
+USER microblog
+
+ENTRYPOINT ["./test.sh"]
+
+
