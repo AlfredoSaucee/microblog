@@ -1,0 +1,68 @@
+services:
+  prod:
+    build:
+      context: .
+      dockerfile: docker/dockerfile_prod
+    image: microblog:1.0.0-prod
+    ports:
+      - "8000:5000"
+    environment:
+      - FLASK_ENV=production
+      - SECRET_KEY=my-secret-key
+      - MYSQL_DATABASE=microblog
+      - DATABASE_URL=mysql+pymysql://microblog:password@mysql:3306/microblog
+
+    restart: always
+    depends_on:
+      - mysql
+    networks:
+      - microblog-network
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile_test
+    image: microblog:1.0.0-test
+    volumes:
+      - ./app:/home/microblog/app
+      - ./tests:/home/microblog/tests
+    environment:
+      - FLASK_ENV=testing
+      - SECRET_KEY=test-secret-key
+      - DATABASE_URL=mysql+pymysql://microblog:password@mysql-test:3306/microblog_test
+    depends_on:
+      - mysql-test
+    networks:
+      - microblog-network
+
+  mysql:
+    image: mysql/mysql-server:5.7
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=microblog
+      - MYSQL_USER=microblog
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - microblog-network
+
+  mysql-test:
+    image: mysql/mysql-server:5.7
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=microblog_test
+      - MYSQL_USER=microblog
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql-test-data:/var/lib/mysql
+    networks:
+      - microblog-network
+
+volumes:
+  mysql-data:
+  mysql-test-data:
+
+networks:
+  microblog-network:
+    driver: bridge
