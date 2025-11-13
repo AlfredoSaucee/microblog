@@ -1,18 +1,19 @@
 name: CD
 on:
+  workflow_run:
+    workflows: ["CI"]
+    branches:
+      - master
   push:
     tags:
       - 'v*.*.*'
 
-jobs:
-  # First run CI tests to ensure code quality before deployment
-  run-tests:
-    uses: ./.github/workflows/ci.yml
   
-  # Only deploy if tests pass
+
+jobs:
+  ## Only run if the tests pass or on tag push
   Deploy-to-docker-hub:
-    needs: run-tests
-    if: ${{ needs.run-tests.result == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
