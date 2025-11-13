@@ -1,0 +1,56 @@
+name: CD
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches:
+      - master
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  ## Only run if the tests pass
+  Deploy-to-docker-hub:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: checking out the code
+        uses: actions/checkout@v4
+
+      - name: Login to Docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+
+      - name: Collect Metadata (tags, labels) for Docker image
+        id: meta-data
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/microblog
+          tags: |
+            type=ref,event=tag
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile_prod
+          push: true
+          tags: ${{ steps.meta-data.outputs.tags }}
+
+
+      - name: Check if image was pushed
+        run: |
+          echo "Image pushed with tags: ${{ steps.meta-data.outputs.tags }}"
+
+
+
+
