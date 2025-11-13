@@ -2,12 +2,11 @@ name: CD
 on:
   workflow_run:
     workflows: ["CI"]
-    branches:
-      - master
+   
   push:
     tags:
       - 'v*.*.*'
-
+   
 
 jobs:
   ## Only run if the tests pass or on tag push
