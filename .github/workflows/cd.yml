@@ -8,7 +8,6 @@ on:
     tags:
       - 'v*.*.*'
 
-  
 
 jobs:
   ## Only run if the tests pass or on tag push
@@ -28,6 +27,8 @@ jobs:
           echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
           echo "Ref: ${{ github.ref }}"
           echo "Ref type: ${{ github.ref_type }}"
+          echo "event.action: ${{ github.event.action }}"
+          echo "github.event_name: ${{ github.event_name }}"
 
       - name: Login to Docker hub
         uses: docker/login-action@v2
