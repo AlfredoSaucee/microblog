@@ -1,7 +1,8 @@
+"""
+Tests for follow functionality
+"""
 # pylint: disable=redefined-outer-name
 from datetime import datetime, timedelta
-from unittest import mock
-import pytest
 from app.models import User, Post
 from app import db
 
