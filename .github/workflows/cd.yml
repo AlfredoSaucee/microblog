@@ -2,18 +2,18 @@ name: CD
 on:
   workflow_run:
     workflows: ["CI"]
-    types:
-      - completed
     branches:
       - master
   push:
     tags:
       - 'v*.*.*'
 
+  
+
 jobs:
-  ## Only run if the tests pass
+  ## Only run if the tests pass or on tag push
   Deploy-to-docker-hub:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -21,6 +21,13 @@ jobs:
     steps:
       - name: checking out the code
         uses: actions/checkout@v4
+
+      - name: Debug workflow context
+        run: |
+          echo "Event name: ${{ github.event_name }}"
+          echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Ref type: ${{ github.ref_type }}"
 
       - name: Login to Docker hub
         uses: docker/login-action@v2
@@ -42,7 +49,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./Dockerfile_prod
+          file: ./docker/Dockerfile_prod
           push: true
           tags: ${{ steps.meta-data.outputs.tags }}
 
