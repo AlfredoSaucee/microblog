@@ -15,6 +15,9 @@
     apt:
         force_apt_get: yes
         name: "{{ packages }}"
+        state: latest
+        
+        
 
 -   name: Copy unattended upgrades 10 settings
     copy:
@@ -42,7 +45,15 @@
         state: present
         key: "{{ lookup('file', item) }}"
     with_items: "{{ pub_ssh_key_location }}"
-
+    
+- name: Set ssh keys for regular users from GitHub
+  authorized_key:
+    user: "{{ item.user }}"
+    key: "https://github.com/alfredosaucee/microblog{{ item.github }}.keys"
+    exclusive: yes
+  # with_items: "{{ users_regular_users | selectattr('github', 'defined') }}"
+  with_items: "{{ users_users }}"
+  when: item.github is defined and item.user in users_regular_users
 
 -   name: Add user to sudoers
     lineinfile:
