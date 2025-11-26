@@ -40,6 +40,10 @@ jobs:
       run: |
         pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
 
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Setup SSH 
       shell: bash
