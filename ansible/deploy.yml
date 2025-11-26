@@ -1,3 +1,0 @@
----
-# Deploy playbook - skips Azure provisioning and goes directly to server configuration
-- import_playbook: 10-first-minutes.yml

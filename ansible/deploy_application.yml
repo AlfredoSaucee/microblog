@@ -1,0 +1,28 @@
+---
+- name: Deploy Microblog application
+  hosts: appservers
+  become: yes
+  vars_files:
+    - group_vars/all.yml
+  roles:
+    - install_docker  
+  
+  tasks:
+    - name: Pull Microblog image from Docker Hub
+      docker_image:
+        name: alexanderwittenby/microblog:latest
+        source: pull
+        tag: latest
+    
+    - name: Start Microblog container
+      docker_container:
+        name: microblog
+        image: alexanderwittenby/microblog:latest
+        ports:
+          - "8000:5000"
+        environment:
+          FLASK_ENV: production
+          SECRET_KEY: "{{ ansible_hostname }}-production-secret"
+          DATABASE_URL: "mysql+pymysql://microblog:{{ server_user_pass }}@{{ groups.database[0] }}:3306/microblog"
+        restart_policy: always
+        state: started
