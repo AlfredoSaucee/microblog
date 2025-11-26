@@ -1,4 +1,5 @@
 # Gather facts from remote instance and set as hosts
+# en playbook som skapar hosts dynamiskts, loggar in på azure och hämtar vm instanser och lägget till i hosts i ramet.
 ---
 -   hosts: local
     connection: local
