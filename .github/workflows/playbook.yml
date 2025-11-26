@@ -3,9 +3,9 @@ name: Deploy microblog application
 on:
   workflow_call:
   push:
-    branches: [ "master, feature/ansible-test" ]
+    branches: [ "master", "feature/ansible-test" ]
   pull_request:
-    branches: [ "master, feature/ansible-test" ]
+    branches: [ "master", "feature/ansible-test" ]
 
 jobs:
   build:
