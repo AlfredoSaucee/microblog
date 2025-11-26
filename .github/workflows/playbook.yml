@@ -40,10 +40,19 @@ jobs:
       run: |
         pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
 
+    - name: Set Azure environment variables
+      run: |
+        echo '${{ secrets.AZURE_CREDENTIALS }}' > /tmp/azure_creds.json
+        echo "AZURE_CLIENT_ID=$(jq -r '.clientId' /tmp/azure_creds.json)" >> $GITHUB_ENV
+        echo "AZURE_SECRET=$(jq -r '.clientSecret' /tmp/azure_creds.json)" >> $GITHUB_ENV
+        echo "AZURE_TENANT=$(jq -r '.tenantId' /tmp/azure_creds.json)" >> $GITHUB_ENV
+        echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscriptionId' /tmp/azure_creds.json)" >> $GITHUB_ENV
+        rm /tmp/azure_creds.json
+
     - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+      run: |
+        az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_SECRET" --tenant "$AZURE_TENANT"
+        az account set --subscription "$AZURE_SUBSCRIPTION_ID"
 
     - name: Setup SSH 
       shell: bash
@@ -58,3 +67,7 @@ jobs:
       run: cd ansible/ && ansible-playbook  -i hosts site.yml  --private-key=/home/runner/.ssh/id_rsa
       env:
         ANSIBLE_HOST_KEY_CHECKING: "False"
+        AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+        AZURE_SECRET: ${{ env.AZURE_SECRET }}
+        AZURE_TENANT: ${{ env.AZURE_TENANT }}
+        AZURE_SUBSCRIPTION_ID: ${{ env.AZURE_SUBSCRIPTION_ID }}
