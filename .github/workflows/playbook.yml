@@ -15,14 +15,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Cache pip
-      uses: actions/setup-python@v3
+    - name: Setup python
+      uses: actions/setup-python@v4
       with:
         python-version: "3.9"
         cache: 'pip'
         cache-dependency-path: requirements/deploy.txt
 
-    - name: Cache Ansible Galaxy
+    - name: Cache Ansible collections
       uses: actions/cache@v3
       with: 
         path: ~/.ansible/collections
