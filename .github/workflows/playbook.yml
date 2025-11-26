@@ -49,11 +49,6 @@ jobs:
         echo "AZURE_SUBSCRIPTION_ID=$(jq -r '.subscriptionId' /tmp/azure_creds.json)" >> $GITHUB_ENV
         rm /tmp/azure_creds.json
 
-    - name: Azure Login
-      run: |
-        az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_SECRET" --tenant "$AZURE_TENANT"
-        az account set --subscription "$AZURE_SUBSCRIPTION_ID"
-
     - name: Setup SSH 
       shell: bash
       run: |
@@ -64,7 +59,7 @@ jobs:
         chmod 700 /home/runner/.ssh/id_rsa
 
     - name: Run playbook
-      run: cd ansible/ && ansible-playbook  -i hosts site.yml  --private-key=/home/runner/.ssh/id_rsa
+      run: cd ansible/ && ansible-playbook -i hosts site.yml --private-key=/home/runner/.ssh/id_rsa
       env:
         ANSIBLE_HOST_KEY_CHECKING: "False"
         AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
