@@ -1,4 +1,11 @@
 ---
+- name: Remove problematic repositories
+  shell: |
+    rm -f /etc/apt/sources.list.d/*backports*
+    sed -i '/bullseye-backports/d' /etc/apt/sources.list
+  become: true
+  ignore_errors: true
+
 - name: Update apt package index
   apt:
     update_cache: yes
@@ -26,13 +33,18 @@
   apt_repository:
     repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
     state: present
+    update_cache: no
+  become: true
+
+- name: Update apt cache after adding Docker repo
+  apt:
+    update_cache: yes
   become: true
 
 - name: Install Docker packages
   apt:
     name: "{{ docker_packages }}"
     state: present
-    update_cache: yes
   become: true
 
 - name: Start and enable Docker service
