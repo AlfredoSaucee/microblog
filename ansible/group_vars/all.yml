@@ -18,3 +18,8 @@ server_user: "deploy"
 server_user_pass: "test" # change me
 server_user_groups:
     -   sudo
+
+
+mysql_root_password: "{{ server_user_pass }}"  
+mysql_user_password: "{{ server_user_pass }}"
+

@@ -1,0 +1,24 @@
+---
+- name: install MySQL DB
+  hosts: database
+  become: yes
+  roles:
+    - install_docker
+  tasks:
+    - name: Create MySQL volume
+      docker_volume:
+        name: mysql_data
+
+    - name: Start MySQL container
+      docker_container:
+        name: mysql
+        image: mysql:8.0
+        ports:
+          - "3306:3306"
+        environment:
+          MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+          MYSQL_DATABASE: "microblog"
+          MYSQL_USER: "microblog"
+          MYSQL_PASSWORD: "{{ mysql_user_password }}"
+        volumes:
+          - mysql_data:/var/lib/mysql
