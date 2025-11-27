@@ -15,10 +15,12 @@
         image: mysql:8.0
         ports:
           - "3306:3306"
-        environment:
-          MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+        env:
+          MYSQL_ROOT_PASSWORD: "{{ server_user_pass }}"
           MYSQL_DATABASE: "microblog"
           MYSQL_USER: "microblog"
-          MYSQL_PASSWORD: "{{ mysql_user_password }}"
+          MYSQL_PASSWORD: "{{ server_user_pass }}"
         volumes:
           - mysql_data:/var/lib/mysql
+        restart_policy: always
+        state: started
