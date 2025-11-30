@@ -51,7 +51,7 @@
 
     - name: Health check wait
       uri:
-        url: "http://{{ ansible_host }}:8000/health"
+        url: "http://127.0.0.1:8000/health"
         status_code: 200
       register: result
       retries: 5
