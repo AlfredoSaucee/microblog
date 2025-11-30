@@ -42,9 +42,16 @@
         restart_policy: always
         state: started
 
+    - name: Wait for port to be available
+      wait_for:
+        host: "{{ ansible_host }}"
+        port: 8000
+        delay: 5
+        timeout: 60
+
     - name: Health check wait
       uri:
-        url: "http://localhost:8000/health"
+        url: "http://{{ ansible_host }}:8000/health"
         status_code: 200
       register: result
       retries: 5
