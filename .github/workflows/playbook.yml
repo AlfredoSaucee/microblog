@@ -59,6 +59,6 @@ jobs:
       run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
     - name: Run playbook
-      run: cd ansible/ && ansible-playbook -i hosts deploy_app.yml -e "deployment_tag=${{ steps.get_tag.outputs.TAG }}" --private-key=/home/runner/.ssh/id_rsa --vault-password-file=./.vault_pass -e 
+      run: cd ansible/ && ansible-playbook -i hosts deploy_app.yml -e "deployment_tag=${{ steps.get_tag.outputs.TAG }}" --private-key=/home/runner/.ssh/id_rsa --vault-password-file=./.vault_pass
       env:
         ANSIBLE_HOST_KEY_CHECKING: "False"
