@@ -4,6 +4,7 @@ app.db
 aws_keys.yml
 logs/
 .pylint.d
+ansible/.vault_pass
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
