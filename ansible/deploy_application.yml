@@ -12,9 +12,9 @@
   tasks:
     - name: Pull Microblog image from Docker Hub
       docker_image:
-        name: alexanderwittenby/microblog:latest
+        name: "alexanderwittenby/microblog:{{ deployment_tag | default('latest') }}"
         source: pull
-        tag: latest
+        tag: "{{ deployment_tag | default('latest') }}"
         force_source: true
     
     - name: stop the old microblog container if running
@@ -32,7 +32,7 @@
     - name: Start Microblog container
       docker_container:
         name: microblog
-        image: alexanderwittenby/microblog:latest
+        image: "alexanderwittenby/microblog:{{ deployment_tag | default('latest') }}"
         ports:
           - "8000:5000"
         env:
@@ -61,4 +61,4 @@
 
     - name: successful deployment message
       debug:
-        msg: "Microblog application deployed successfully on {{ ansible_host }} with version "
+        msg: "Microblog application deployed successfully on {{ ansible_host }} with version {{ deployment_tag | default('latest') }}"
