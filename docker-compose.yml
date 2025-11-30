@@ -2,11 +2,12 @@ services:
   prod:
     build:
       context: .
-      dockerfile: docker/dockerfile_prod
+      dockerfile: docker/Dockerfile_prod
     image: microblog:1.0.0-prod
     ports:
       - "8000:5000"
     environment:
+      - FLASK_APP=microblog.py
       - FLASK_ENV=production
       - SECRET_KEY=my-secret-key
       - MYSQL_DATABASE=microblog

@@ -1,0 +1,65 @@
+---
+- name: Remove problematic repositories
+  shell: |
+    rm -f /etc/apt/sources.list.d/*backports*
+    sed -i '/bullseye-backports/d' /etc/apt/sources.list
+  become: true
+  ignore_errors: true
+
+- name: Update apt package index
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  become: true
+
+- name: Install required system packages
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+  become: true
+
+- name: Add Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    state: present
+  become: true
+
+- name: Add Docker repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    state: present
+    update_cache: no
+  become: true
+
+- name: Update apt cache after adding Docker repo
+  apt:
+    update_cache: yes
+  become: true
+
+- name: Install Docker packages
+  apt:
+    name: "{{ docker_packages }}"
+    state: present
+  become: true
+
+- name: Start and enable Docker service
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+  become: true
+
+- name: Add deploy user to docker group
+  user:
+    name: "{{ server_user }}"
+    groups: docker
+    append: yes
+  become: true
+
+
+      

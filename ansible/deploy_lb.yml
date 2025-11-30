@@ -2,6 +2,9 @@
     -   hosts: loadbalancer
         remote_user: "deploy"
         become: yes
+        vars_files:
+          - group_vars/all.yml
+          - group_vars/vault.yml
         become_method: sudo
         roles:
             -   deploy_lb

@@ -2,5 +2,12 @@
 localhost ansible_connection=local
 
 [appservers]
-appserver1.alexanderwittenby.me
-appserver2.alexanderwittenby.me
+appserver1.alexanderwittenby.me ansible_user=deploy  # appserver1-VM
+appserver2.alexanderwittenby.me ansible_user=deploy  # appserver2-VM
+
+[database]
+database.alexanderwittenby.me ansible_user=deploy  # database-VM
+[loadbalancer]
+loadbalancer.alexanderwittenby.me ansible_user=deploy   # loadbalancer-VM
+
+
