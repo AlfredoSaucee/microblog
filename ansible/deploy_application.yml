@@ -15,6 +15,7 @@
         name: alexanderwittenby/microblog:latest
         source: pull
         tag: latest
+        force_source: true
     
     - name: stop the old microblog container if running
       docker_container:
