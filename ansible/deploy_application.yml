@@ -1,6 +1,7 @@
 ---
 - name: Deploy Microblog application
   hosts: appservers
+  serial: 1
   become: yes
   vars_files:
     - group_vars/all.yml
@@ -15,6 +16,18 @@
         source: pull
         tag: latest
     
+    - name: stop the old microblog container if running
+      docker_container:
+        name: microblog
+        state: stopped
+      ignore_errors: yes
+
+    - name: Remove the old microblog container if stopped
+      docker_container:
+        name: microblog
+        state: absent
+      ignore_errors: yes
+    
     - name: Start Microblog container
       docker_container:
         name: microblog
@@ -25,6 +38,19 @@
           FLASK_APP: microblog.py
           FLASK_ENV: production
           SECRET_KEY: "{{ ansible_hostname }}-production-secret"
-          DATABASE_URL: "mysql+pymysql://microblog:{{ server_user_pass }}@{{ groups.database[0] }}:3306/microblog"
+          DATABASE_URL: "mysql+pymysql://microblog:{{ mysql_user_password }}@{{ groups.database[0] }}:3306/microblog"
         restart_policy: always
         state: started
+
+    - name: Health check wait
+      uri:
+        url: "http://localhost:8000/health"
+        status_code: 200
+      register: result
+      retries: 5
+      delay: 10
+      until: result.status == 200
+
+    - name: successful deployment message
+      debug:
+        msg: "Microblog application deployed successfully "
