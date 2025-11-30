@@ -4,6 +4,7 @@
   become: yes
   vars_files:
     - group_vars/all.yml
+    - group_vars/vault.yml
   roles:
     - install_docker  
   
@@ -21,6 +22,7 @@
         ports:
           - "8000:5000"
         env:
+          FLASK_APP: microblog.py
           FLASK_ENV: production
           SECRET_KEY: "{{ ansible_hostname }}-production-secret"
           DATABASE_URL: "mysql+pymysql://microblog:{{ server_user_pass }}@{{ groups.database[0] }}:3306/microblog"

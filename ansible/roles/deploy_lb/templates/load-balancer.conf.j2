@@ -1,4 +1,5 @@
 upstream app-hosts {
+    ip_hash;
 {% for host in groups['appservers'] %}
     server {{ host }}:8000;
 {% endfor %}

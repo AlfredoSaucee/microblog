@@ -1,21 +1,19 @@
+
 ---
 # Here you can add variables that will be available for all hosts.
 ansible_python_interpreter: "python3"
 
-region: northeurope
-resource_group: DIDA-ALWI22-DV1673-H25-LP2 # Change me
-domain_name: alexanderwittenby.me # Change me
+region: "{{ vault_azure_region }}" # Change me
+resource_group: "{{ vault_azure_resource_group }}" # Change me
+domain_name: "{{ vault_domain_name }}" # Change me
 
-admin_email: alwi22@student.bth.se
-
+admin_email: "{{ vault_admin_email }}"
 vmtags:
-    StudentId: alwi22 # Change me
+    StudentId: "{{ vault_student_id }}" # Change me
 
-pub_ssh_key_location: '/home/alexander/.ssh/azure_video.pub' # Change me, your local ssh key!
-
-
+pub_ssh_key_location: "{{ vault_SSH_public_key_path }}" # Change me, your local ssh key!
 server_user: "deploy"
-server_user_pass: "test" # change me
+server_user_pass: "{{ vault_server_user_pass }}" # change me
 server_user_groups:
     -   sudo
 
