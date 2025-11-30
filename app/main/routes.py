@@ -1,6 +1,7 @@
 """
 Contains routes for main purpose of app
 """
+import os
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_required
@@ -58,6 +59,16 @@ def explore():
     """
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Explore', posts=posts)
+
+@bp.route('/version')
+@login_required
+def version():
+    """
+    Route for version
+    """
+    version = os.environ.get('VERSION', 'Unknown')
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Version', posts=posts, version=version)
 
 
 @bp.route('/user/<username>')
