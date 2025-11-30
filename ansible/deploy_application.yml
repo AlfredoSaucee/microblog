@@ -61,4 +61,4 @@
 
     - name: successful deployment message
       debug:
-        msg: "Microblog application deployed successfully "
+        msg: "Microblog application deployed successfully on {{ ansible_host }} with version "

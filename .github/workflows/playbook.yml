@@ -4,8 +4,11 @@ on:
   workflow_call:
   push:
     branches: [ "master" ]
+    tags:
+      - 'v*.*.*'
   pull_request:
-    branches: [ "master" ]
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -51,7 +54,10 @@ jobs:
 
     - name: Create vault password file
       run: echo "${{ secrets.VAULT_PASSWORD }}" > ansible/.vault_pass
-
+    - name: Get the tag associated with this deployment
+      id: get_tag
+      run: echo "TAG=${GITHUB_REF#refs/tags/}" 
+      
     - name: Run playbook
       run: cd ansible/ && ansible-playbook -i hosts deploy_app.yml --private-key=/home/runner/.ssh/id_rsa --vault-password-file=./.vault_pass
       env:

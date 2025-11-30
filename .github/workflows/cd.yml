@@ -6,6 +6,10 @@ on:
   push:
     tags:
       - 'v*.*.*'
+
+  pull_request:
+    tags:
+      - 'v*.*.*'
    
 
 jobs:
@@ -57,6 +61,8 @@ jobs:
       - name: Check if image was pushed
         run: |
           echo "Image pushed with tags: ${{ steps.meta-data.outputs.tags }}"
+
+
 
 
 
