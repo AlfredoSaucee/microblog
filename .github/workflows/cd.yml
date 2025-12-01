@@ -8,7 +8,7 @@ jobs:
   
   Deploy-to-docker-hub:
     
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.ref_type == 'tag' && github.event.workflow_run_head_branch == 'master' }}  
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -16,15 +16,28 @@ jobs:
     steps:
       - name: checking out the code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Check if commit has tag
+        id: check-tag
+        run: |
+          if git describe --tags --exact-match HEAD 2>/dev/null; then
+            echo "has-tag=true" >> $GITHUB_OUTPUT
+            echo "tag-name=$(git describe --tags --exact-match HEAD)" >> $GITHUB_OUTPUT
+          else
+            echo "has-tag=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
 
       - name: Debug workflow context
         run: |
           echo "Event name: ${{ github.event_name }}"
           echo "Workflow run conclusion: ${{ github.event.workflow_run.conclusion }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "Ref type: ${{ github.ref_type }}"
-          echo "event.action: ${{ github.event.action }}"
-          echo "github.event_name: ${{ github.event_name }}"
+          echo "Head branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Has tag: ${{ steps.check-tag.outputs.has-tag }}"
+          echo "Tag name: ${{ steps.check-tag.outputs.tag-name }}"
+          echo "Head SHA: ${{ github.event.workflow_run.head_sha }}"
 
       - name: Login to Docker hub
         uses: docker/login-action@v2
@@ -40,7 +53,8 @@ jobs:
           images: |
             ${{ secrets.DOCKER_HUB_USERNAME }}/microblog
           tags: |
-            type=ref,event=tag
+            type=raw,value=${{ steps.check-tag.outputs.tag-name }}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
