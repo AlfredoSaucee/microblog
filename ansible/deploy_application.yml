@@ -38,6 +38,7 @@
         env:
           FLASK_APP: microblog.py
           FLASK_ENV: production
+          DEPLOYMENT_TAG: "{{ deployment_tag | default('latest') }}"
           SECRET_KEY: "{{ ansible_hostname }}-production-secret"
           DATABASE_URL: "mysql+pymysql://microblog:{{ mysql_user_password }}@{{ groups.database[0] }}:3306/microblog"
         restart_policy: always
