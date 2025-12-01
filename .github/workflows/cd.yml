@@ -1,21 +1,12 @@
 name: CD
 on:
-  workflow_run:
-    workflows: ["CI"]
-   
   push:
     tags:
       - 'v*.*.*'
 
-  pull_request:
-    tags:
-      - 'v*.*.*'
-   
-
 jobs:
   
   Deploy-to-docker-hub:
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -61,6 +52,10 @@ jobs:
       - name: Check if image was pushed
         run: |
           echo "Image pushed with tags: ${{ steps.meta-data.outputs.tags }}"
+
+  deploy-to-servers:
+    needs: Deploy-to-docker-hub
+    uses: ./.github/workflows/playbook.yml
 
 
 

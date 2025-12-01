@@ -2,13 +2,6 @@ name: Deploy microblog application
 
 on:
   workflow_call:
-  push:
-    branches: [ "master" ]
-    tags:
-      - 'v*.*.*'
-  pull_request:
-    tags:
-      - 'v*.*.*'
 
 jobs:
   build:
