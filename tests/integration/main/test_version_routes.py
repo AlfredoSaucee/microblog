@@ -14,4 +14,3 @@ def test_version_route_returns_version(client, login_user_response, monkeypatch)
     assert response.status_code == 200
     
     assert str.encode(test_version) in response.data
-

@@ -36,7 +36,7 @@ Types of changes:
 ### Security
 
 
-[11.1.7] - 2025-11-30
+[11.1.8] - 2025-11-30
 
 ### Added
 - Version route at /version to display application version from environment variable
