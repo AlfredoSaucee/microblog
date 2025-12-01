@@ -2,8 +2,6 @@
 Factory for application
 """
 
-import os
-import socket
 import logging
 from logging.handlers import RotatingFileHandler
 from flask import Flask
@@ -50,14 +48,6 @@ def create_app(config_class=ProdConfig):
     from app.main import bp as main_bp
     app.register_blueprint(main_bp)
     # pylint: enable=wrong-import-position, cyclic-import, import-outside-toplevel
-
-    @app.context_processor
-    def inject_server_info():
-        """Inject server information into all templates"""
-        return {
-            'hostname': socket.gethostname(),
-            'version': os.environ.get('APP_VERSION', 'dev')
-        }
 
     if not app.debug and not app.testing:
         formatter = RequestFormatter(

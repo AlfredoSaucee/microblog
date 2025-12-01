@@ -2,6 +2,7 @@
 Contains routes for main purpose of app
 """
 import os
+import socket
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_required
@@ -60,6 +61,7 @@ def explore():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Explore', posts=posts)
 
+
 @bp.route('/version')
 @login_required
 def version():
@@ -67,6 +69,7 @@ def version():
     Route for version
     """
     deployment_version = os.environ.get('DEPLOYMENT_TAG', 'Unknown')
+    appserver_hostname = socket.gethostname()
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Version', posts=posts, version=deployment_version)
 
