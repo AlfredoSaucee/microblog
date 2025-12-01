@@ -24,4 +24,5 @@ jobs:
         run: |
           docker compose -f docker-compose.yml exec -T test sh -c "cd /home/microblog && ./test.sh"
       - name: Tear down services
+        if: always()
         run: docker compose -f docker-compose.yml down

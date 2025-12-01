@@ -112,10 +112,3 @@ jobs:
         run: cd ansible/ && ansible-playbook -i hosts deploy_app.yml -e "deployment_tag=${{ steps.check-tag.outputs.tag-name }}" --private-key=/home/runner/.ssh/id_rsa --vault-password-file=./.vault_pass
         env:
           ANSIBLE_HOST_KEY_CHECKING: "False"
-
-
-
-
-
-
-
