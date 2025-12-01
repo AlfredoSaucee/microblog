@@ -71,7 +71,8 @@ def version():
     deployment_version = os.environ.get('DEPLOYMENT_TAG', 'Unknown')
     appserver_hostname = socket.gethostname()
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Version', posts=posts, version=deployment_version, hostname=appserver_hostname)
+    return render_template('index.html', title='Version', posts=posts, version=deployment_version,
+                           hostname=appserver_hostname)
 
 
 @bp.route('/user/<username>')
