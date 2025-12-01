@@ -214,3 +214,7 @@ File \"microblog/venv/lib/python3.5/site-packages/boto/rds2/layer1.py\", line 15
 Open the file `venv/lib/python3.5/site-packages/boto/rds2/layer1.py` and go to line 3779 (this can change), look for the line `return json.loads(body)`. Add a new line before that one with `body = response.read().decode('utf-8')`.
 
 You can read about the error here, https://github.com/boto/boto/issues/2677.
+
+
+
+## Test
