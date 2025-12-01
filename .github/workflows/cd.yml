@@ -8,7 +8,7 @@ jobs:
   
   Deploy-to-docker-hub:
     
-    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}  
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.ref_type == 'tag' && github.event.workflow_run_head_branch == 'master' }}  
     runs-on: ubuntu-latest
     permissions:
       contents: read
