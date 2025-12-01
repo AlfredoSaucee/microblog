@@ -7,7 +7,7 @@ on:
 jobs:
   
   Deploy-to-docker-hub:
-    ### only run this if the CI workflow completed successfully and it was triggered by a tag
+    
     if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}  
     runs-on: ubuntu-latest
     permissions:
