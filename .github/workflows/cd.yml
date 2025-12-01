@@ -1,12 +1,14 @@
 name: CD
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
 
 jobs:
   
   Deploy-to-docker-hub:
+    
+    if: ${{ github.event.workflow_run.conclusion == 'success' && startsWith(github.event.workflow_run.head_branch, 'v') }}  
     runs-on: ubuntu-latest
     permissions:
       contents: read
