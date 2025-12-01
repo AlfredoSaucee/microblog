@@ -66,9 +66,9 @@ def version():
     """
     Route for version
     """
-    version = os.environ.get('DEPLOYMENT_TAG', 'Unknown')
+    deployment_version = os.environ.get('DEPLOYMENT_TAG', 'Unknown')
     posts = Post.query.order_by(Post.timestamp.desc()).all()
-    return render_template('index.html', title='Version', posts=posts, version=version)
+    return render_template('index.html', title='Version', posts=posts, version=deployment_version)
 
 
 @bp.route('/user/<username>')
