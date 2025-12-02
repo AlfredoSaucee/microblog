@@ -46,7 +46,7 @@
 
     - name: Wait for port to be available
       wait_for:
-        host: "{{ ansible_host }}"
+        host: "127.0.0.1"
         port: 8000
         delay: 5
         timeout: 60
@@ -62,4 +62,4 @@
 
     - name: successful deployment message
       debug:
-        msg: "Microblog application deployed successfully on {{ ansible_host }} with version {{ deployment_tag | default('latest') }}"
+        msg: "Microblog application deployed successfully on {{ inventory_hostname }} with version {{ deployment_tag | default('latest') }}"
