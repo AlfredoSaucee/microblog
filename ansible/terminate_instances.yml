@@ -7,6 +7,9 @@
         - azure.azcollection
     roles:
         - gather_instances
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
 
 
 
@@ -18,6 +21,9 @@
         - azure.azcollection
     roles:
         - terminate_instances
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
 
 
 
@@ -28,6 +34,9 @@
         -   include_tasks: roles/terminate_instances/tasks/vnet.yml
     collections:
         - azure.azcollection
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
 
 
 
@@ -38,3 +47,6 @@
         state: absent
     roles: 
         - security_groups
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml

@@ -6,6 +6,9 @@
 -   name: add instances to hosts
     hosts: local
     gather_facts: False
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
     tasks:
         - include_vars: roles/provision_instances/vars/main.yml
         - include_tasks: roles/provision_instances/tasks/add_vms_as_hosts.yml
@@ -15,6 +18,9 @@
 -   name: create security groups
     hosts: local
     gather_facts: False
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
     roles: 
         - security_groups
 
@@ -23,6 +29,9 @@
 -   name: create networks
     hosts: local
     gather_facts: False
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
     tasks:
         -   include_tasks: roles/provision_instances/tasks/vnet.yml
     collections:
@@ -33,6 +42,9 @@
 -   hosts: devops
     connection: local # Keep ansible from open ssh connection
     gather_facts: False
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
     # no_log: True
     collections:
         - azure.azcollection

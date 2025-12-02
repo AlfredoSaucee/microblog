@@ -6,3 +6,6 @@
     become_method: sudo
     roles:
         -   10-first-minutes
+    vars_files:
+        -   group_vars/all.yml
+        -   group_vars/vault.yml

@@ -7,3 +7,6 @@
         - azure.azcollection
     roles:
         - gather_instances
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml

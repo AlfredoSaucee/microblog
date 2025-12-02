@@ -21,3 +21,15 @@ server_user_groups:
 mysql_root_password: "{{ server_user_pass }}"  
 mysql_user_password: "{{ server_user_pass }}"
 
+users_users:
+    -   user: deploy
+        github: alfredosaucee
+    -   user: deploy
+        github: Alexanderwittenby1
+    -   user: deploy
+        github: Billyherringtonbeliever86
+
+users_regular_users:
+    -   deploy
+
+
