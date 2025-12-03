@@ -10,15 +10,18 @@ from flask_login import UserMixin
 from app import db, login
 
 followers = db.Table('followers',
-    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
-    db.Column('followed_id', db.Integer, db.ForeignKey('user.id'))
-)
+                     db.Column('follower_id', db.Integer,
+                               db.ForeignKey('user.id')),
+                     db.Column('followed_id', db.Integer,
+                               db.ForeignKey('user.id'))
+                     )
+
 
 class User(UserMixin, db.Model):
     """
     Represetns a system User
     """
-    id = db.Column(db.Integer, primary_key=True) 
+    id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -34,7 +37,7 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f'<User {self.username}, {self.email}>'
-    
+
     def set_password(self, password):
         """
         Set password to generated password hash
@@ -47,7 +50,7 @@ class User(UserMixin, db.Model):
         """
         current_app.logger.debug(f"Checking password {password}")
         return check_password_hash(self.password_hash, password)
-    
+
     def follow(self, user):
         """"
         Follows a user
@@ -68,7 +71,7 @@ class User(UserMixin, db.Model):
         """
         return self.followed.filter(
             followers.c.followed_id == user.id).count() > 0
-    
+
     def followed_posts(self):
         """"
         Fetches followed user's posts
@@ -91,10 +94,11 @@ class User(UserMixin, db.Model):
         """
         Return Gravatar URL based on email
         """
-        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        digest = md5(usedforsecurity=False self.email.lower().encode('utf-8')).hexdigest()
         url = f'https://www.gravatar.com/avatar/{digest}?d=retro&s={size}'
         current_app.logger.debug(f"Get gravatar {url}")
         return url
+
 
 class Post(db.Model):
     """
