@@ -155,7 +155,7 @@ test: validate exec-tests
 	$(MAKE) clean-cov
 
 
-
+#xd
 # target: trivy                         - Run Trivy security scans (filesystem and image)
 .PHONY: trivy
 trivy:
