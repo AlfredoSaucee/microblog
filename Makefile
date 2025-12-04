@@ -175,6 +175,16 @@ bandit:
 	@$(ECHO) "$(ACTION)---> Running bandit security linter" "$(NO_COLOR)"
 	@bandit -r app/
 
+## target: dockle
+.PHONY: dockle
+dockle:
+	@$(ECHO) "$(ACTION)---> Running dockle on production image" "$(NO_COLOR)"
+	docker run --rm \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		goodwithtech/dockle:v$$(curl --silent https://api.github.com/repos/goodwithtech/dockle/releases/latest \
+			| grep '"tag_name":' \
+			| sed -E 's/.*"v([^"]+)".*/\1/') \
+		microblog:1.0.0-prod
 
 ## target: clean-py                     - Remove generated python files
 .PHONY: clean-py

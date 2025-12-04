@@ -16,6 +16,8 @@
         source: pull
         tag: "{{ deployment_tag | default('latest') }}"
         force_source: true
+      environment:
+        DOCKER_CONTENT_TRUST: "1"
     
     - name: stop the old microblog container if running
       docker_container:
