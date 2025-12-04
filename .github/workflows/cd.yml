@@ -63,6 +63,8 @@ jobs:
           file: ./docker/Dockerfile_prod
           push: true
           tags: ${{ steps.meta-data.outputs.tags }}
+        env:
+          DOCKER_CONTENT_TRUST: "1"
 
 
       - name: Check if image was pushed
