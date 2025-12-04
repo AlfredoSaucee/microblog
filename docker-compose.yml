@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile_prod
-    image: microblog:1.1.0-prod
+    image: microblog:1.0.0-prod
     ports:
       - "8000:5000"
     environment:
