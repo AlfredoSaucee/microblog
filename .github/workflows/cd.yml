@@ -1,7 +1,7 @@
 name: CD
 on:
   workflow_run:
-    workflows: ["CI"]
+    workflows: ["CI", "Pre-CD workflow (Bandit scan, Trivy scan, Dockle scan)"]
     types: [completed]
 
 jobs:
