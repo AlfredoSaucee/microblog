@@ -162,6 +162,12 @@ test-html: exec-tests
 	${py} -m coverage html  --rcfile=.coveragerc && ${browser} tests/coverage_html/index.html &
 
 
+## target: bandit                      - Run bandit security linter on /app folder
+.PHONY: bandit
+bandit: 
+	@$(ECHO) "$(ACTION)---> Running bandit security linter" "$(NO_COLOR)"
+	@bandit -r app/
+
 
 ## target: clean-py                     - Remove generated python files
 .PHONY: clean-py
