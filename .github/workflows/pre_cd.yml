@@ -3,7 +3,7 @@ on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
-## This workflow runs only if the CI workflow completed successfully on the master branch or when a tag is pushed. #test
+## This workflow runs only if the CI workflow completed successfully on the master branch or when a tag is pushed. #testing to see if it triggers correctly
 jobs:
   bandit_scan:
     if: ${{ github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.head_branch == 'master' || startsWith(github.event.workflow_run.head_branch, 'refs/tags/')) }}
