@@ -10,5 +10,5 @@ database.alexanderwittenby.me ansible_user=deploy  # database-VM
 [loadbalancer]
 loadbalancer.alexanderwittenby.me ansible_user=deploy   # loadbalancer-VM
 
-
-
+[devops:children]
+loadbalancer
