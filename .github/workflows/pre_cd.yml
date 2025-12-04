@@ -1,0 +1,50 @@
+name: Pre-CD workflow (Bandit scan, Trivy scan, Dockle scan)
+on: 
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+## This workflow runs only if the CI workflow completed successfully on the master branch.
+jobs:
+  bandit_scan:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    runs-on: ubuntu-latest
+    name: Scan the code with Bandit
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+      - name: Install Bandit
+        run: make install-test
+      - name: Run Bandit scan
+        run: make bandit
+
+  trivy_scan:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    runs-on: ubuntu-latest
+    name: Scan Docker image with Trivy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker image
+        run: docker build -t microblog:latest -f ./docker/Dockerfile_prod .
+      - name: Run Trivy scan
+        run: make trivy
+
+  dockle_scan:
+    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    runs-on: ubuntu-latest
+    name: Scan Docker image with Dockle
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Build Docker image
+        run: docker build -t microblog:latest -f ./docker/Dockerfile_prod .
+      - name: Run Dockle scan
+        run: make dockle
