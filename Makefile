@@ -156,6 +156,13 @@ test: validate exec-tests
 
 
 
+# target: trivy                         - Run Trivy security scans (filesystem and image)
+.PHONY: trivy
+trivy:
+	docker run --rm -v $(CURDIR):/repo -w /repo aquasec/trivy:latest fs --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 --no-progress --skip-dirs .venv,venv .
+	docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --scanners vuln,secret,misconfig --no-progress --severity HIGH,CRITICAL --exit-code 1 microblog:latest
+
+
 ## target: test-html                    - Run tests and display detailed code coverage with html
 .PHONY: test-html
 test-html: exec-tests
