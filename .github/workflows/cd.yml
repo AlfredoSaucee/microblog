@@ -55,6 +55,11 @@ jobs:
             type=raw,value=${{ steps.check-tag.outputs.tag-name }}
             type=raw,value=latest
 
+      - name: enable Docker Content Trust
+        run: |
+          echo "export DOCKER_CONTENT_TRUST=1" >> $GITHUB_ENV
+  
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
