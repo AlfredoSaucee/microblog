@@ -15,17 +15,6 @@
 
 
 
--   name: create security groups
-    hosts: local
-    gather_facts: False
-    vars_files:
-        - group_vars/all.yml
-        - group_vars/vault.yml
-    roles: 
-        - security_groups
-
-
-
 -   name: create networks
     hosts: local
     gather_facts: False
@@ -50,3 +39,25 @@
         - azure.azcollection
     roles:
         - provision_instances
+
+-   name: gather instances
+    hosts: local
+    connection: local
+    gather_facts: False
+    collections:
+        - azure.azcollection
+    roles:
+        - gather_instances
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
+
+
+-   name: create security groups
+    hosts: local
+    gather_facts: False
+    vars_files:
+        - group_vars/all.yml
+        - group_vars/vault.yml
+    roles: 
+        - security_groups
