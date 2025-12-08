@@ -1,14 +1,13 @@
 name: CD
 on:
   workflow_run:
-    workflows: ["CI", "Pre-CD workflow (Bandit scan, Trivy scan, Dockle scan)"]
+    workflows: ["Pre-CD workflow (Bandit scan, Trivy scan, Dockle scan)"]
     types: [completed]
 
 jobs:
   
   Deploy-to-docker-hub:
-    
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'master' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' && (github.event.workflow_run.head_branch == 'master' || startsWith(github.event.workflow_run.head_branch, 'refs/tags/')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
