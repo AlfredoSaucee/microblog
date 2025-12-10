@@ -46,9 +46,5 @@ jobs:
         uses: docker/setup-buildx-action@v2
       - name: Build Docker image
         run: docker build -t microblog:latest -f ./docker/Dockerfile_prod .
-        env:
-          DOCKER_CONTENT_TRUST: "1"
       - name: Run Dockle scan
         run: make dockle
-        env:
-          DOCKER_CONTENT_TRUST: "1"
