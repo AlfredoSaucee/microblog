@@ -18,7 +18,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - monitor
+      - app_network
 
   test:
     build:
@@ -35,7 +35,7 @@ services:
     depends_on:
       - mysql-test
     networks:
-      - monitor
+      - app_network
 
   mysql:
     image: mysql/mysql-server:5.7
@@ -47,9 +47,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - monitor
-    ports:
-      - "9200:9200" # Expose node-exporter port on MySQL container for monitoring
+      - app_network
 
   mysql-test:
     image: mysql/mysql-server:5.7
@@ -61,7 +59,7 @@ services:
     volumes:
       - mysql-test-data:/var/lib/mysql
     networks:
-      - monitor
+      - app_network
 
   #### BEHÖVER KONFIGURERAS FÖR MONITORING ####
   node-exporter:
@@ -81,6 +79,7 @@ services:
       - "9100:9100"
     networks:
       - monitor
+      - app_network
   ### BEHÖVER KONFIGURERA PROMETHEUS.YML FILEN!!! ####
   prometheus:
     image: prom/prometheus:v3.8.0
@@ -98,6 +97,7 @@ services:
       - "--web.enable-lifecycle"
     networks:
       - monitor
+      - app_network
     ports:
       - "9090:9090"
 
@@ -131,3 +131,4 @@ volumes:
 
 networks:
   monitor:
+  app_network:
