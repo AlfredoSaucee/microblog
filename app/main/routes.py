@@ -75,6 +75,16 @@ def version():
                            hostname=appserver_hostname)
 
 
+@bp.route('/slow')
+def slow():
+    """
+    Route that simulates a slow response
+    """
+    import time
+    time.sleep(5)  # Sleep for 5 seconds to simulate slowness
+    return "Slow response"
+
+
 @bp.route('/user/<username>')
 @login_required
 def user(username):

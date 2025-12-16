@@ -1,0 +1,53 @@
+groups:
+  - name: microblog_alerts
+    rules:
+      # Test regel - många GET requests
+      - alert: HighGetRequestRate
+        expr: flask_http_request_total{method="GET", status="200"} > 20 and flask_http_request_total{method="GET", status="200"} < 250
+        for: 10s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Många GET requests"
+          description: "{{ $value }} GET requests på 10 sekunder"
+
+      # Hög HTTP fel-rate (4xx/5xx errors)
+      - alert: HighErrorRate
+        expr: rate(flask_http_request_total{status=~"4..|5.."}[5m]) > 0.1
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Hög fel-rate i applikationen"
+          description: "Fel-rate är {{ $value | humanizePercentage }} över 5 minuter"
+
+      # Långsamma requests - summa alla /slow status codes
+      - alert: SlowRequests
+        expr: sum(flask_http_request_duration_seconds_bucket{le="5.0",path="/slow"}) < sum(flask_http_request_duration_seconds_count{path="/slow"})
+        for: 5s
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow requests detekterade"
+          description: "Requests till /slow tar längre än 5 sekunder"
+
+      # Applikation ner (inga metrics på 2 minuter)
+      - alert: AppDown
+        expr: up{job="microblog"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Microblog applikation är ner"
+          description: "Kan inte nå microblog i över 1 minut"
+
+      # Minnesproblem (om du har process_resident_memory_bytes)
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes / 1024 / 1024 > 100
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Hög minnesanvändning"
+          description: "Applikationen använder {{ $value }}MB minne"
+        

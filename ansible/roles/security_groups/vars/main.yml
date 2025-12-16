@@ -70,7 +70,7 @@ sg_groups:
             access: Allow
             priority: 1003
             direction: Inbound
-            source_address_prefix: "{{ hostvars[groups['appservers'][1]]['ansible_default_ipv4']['address'] }}/32"¨
+            source_address_prefix: "{{ hostvars[groups['appservers'][1]]['ansible_default_ipv4']['address'] }}/32"
     -   name: monitoring
         port_rules:
         -   name: SSH
@@ -94,4 +94,4 @@ sg_groups:
             priority: 1003
             direction: Inbound
             source_address_prefix: '0.0.0.0/0'
-            
+

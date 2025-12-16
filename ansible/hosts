@@ -12,3 +12,7 @@ loadbalancer.alexanderwittenby.me ansible_user=deploy   # loadbalancer-VM
 
 [devops:children]
 loadbalancer
+
+
+[monitoring]
+monitoring.alexanderwittenby.me ansible_user=deploy  # monitoring-VM

@@ -11,7 +11,7 @@ COPY app app
 COPY migrations migrations
 COPY requirements requirements
 COPY requirements.txt microblog.py boot.sh ./
-
+COPY gunicorn_config.py gunicorn_config.py
 RUN python -m venv .venv && \
     .venv/bin/pip3 install --upgrade pip "setuptools>=78.1.1" && \
     .venv/bin/pip3 install -r requirements.txt
@@ -24,6 +24,8 @@ RUN chmod +x boot.sh && \
 USER microblog
 
 EXPOSE 5000
+
+ENV prometheus_multiproc_dir=/tmp
 
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:5000/health || exit 1

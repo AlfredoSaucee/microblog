@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile_prod
     image: microblog:1.0.0-prod
+    container_name: microblog-prod
     ports:
       - "8000:5000"
     environment:
@@ -17,7 +18,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - microblog-network
+      - monitor
 
   test:
     build:
@@ -34,7 +35,7 @@ services:
     depends_on:
       - mysql-test
     networks:
-      - microblog-network
+      - monitor
 
   mysql:
     image: mysql/mysql-server:5.7
@@ -46,7 +47,6 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - microblog-network
       - monitor
     ports:
       - "9200:9200" # Expose node-exporter port on MySQL container for monitoring
@@ -61,7 +61,7 @@ services:
     volumes:
       - mysql-test-data:/var/lib/mysql
     networks:
-      - microblog-network
+      - monitor
 
   #### BEHÖVER KONFIGURERAS FÖR MONITORING ####
   node-exporter:
@@ -88,6 +88,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
+      - ./rules.yml:/etc/prometheus/rules.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -115,6 +116,10 @@ services:
     restart: unless-stopped
     ports:
       - "9093:9093"
+    volumes:
+      - "./alertmanager.yml:/config/alertmanager.yml"
+    command:
+      - "--config.file=/config/alertmanager.yml"
     networks:
       - monitor
 
@@ -126,5 +131,3 @@ volumes:
 
 networks:
   monitor:
-  microblog-network:
-    driver: bridge
