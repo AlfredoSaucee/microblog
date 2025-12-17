@@ -189,7 +189,7 @@ dockle:
 		goodwithtech/dockle:v$$(curl --silent https://api.github.com/repos/goodwithtech/dockle/releases/latest \
 			| grep '"tag_name":' \
 			| sed -E 's/.*"v([^"]+)".*/\1/') \
-		microblog:1.0.0-prod
+		-l microblog:1.0.0-prod
 
 ## target: clean-py                     - Remove generated python files (comment)
 .PHONY: clean-py
