@@ -181,15 +181,11 @@ trivy:
 	docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --scanners vuln,secret,misconfig --no-progress --severity HIGH,CRITICAL --exit-code 1 microblog:latest
 
 ## target: dockle
+
 .PHONY: dockle
 dockle:
-	@$(ECHO) "$(ACTION)---> Running dockle on production image" "$(NO_COLOR)"
-	docker run --rm \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		goodwithtech/dockle:v$$(curl --silent https://api.github.com/repos/goodwithtech/dockle/releases/latest \
-			| grep '"tag_name":' \
-			| sed -E 's/.*"v([^"]+)".*/\1/') \
-		-l microblog:1.0.0-prod
+	VERSION=$$(curl --silent 'https://api.github.com/repos/goodwithtech/dockle/releases/latest' | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/') && \
+	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock goodwithtech/dockle:v$${VERSION} microblog:latest
 
 ## target: clean-py                     - Remove generated python files (comment)
 .PHONY: clean-py
