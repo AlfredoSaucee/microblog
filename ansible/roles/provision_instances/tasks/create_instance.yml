@@ -1,4 +1,8 @@
 ---
+- name: Debug iname value
+  debug:
+    var: iname
+
 -   name: Create public IP address
     azure_rm_publicipaddress:
         resource_group: "{{ resource_group }}"

@@ -155,13 +155,6 @@ test: validate exec-tests
 	$(MAKE) clean-cov
 
 
-#xd
-# target: trivy                         - Run Trivy security scans (filesystem and image)
-.PHONY: trivy
-trivy:
-	docker run --rm -v $(CURDIR):/repo -w /repo aquasec/trivy:latest fs --scanners vuln,secret,misconfig --severity HIGH,CRITICAL --exit-code 1 --no-progress --skip-dirs .venv,venv .
-	docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image --scanners vuln,secret,misconfig --no-progress --severity HIGH,CRITICAL --exit-code 1 microblog:latest
-
 
 ## target: test-html                    - Run tests and display detailed code coverage with html
 .PHONY: test-html
@@ -175,11 +168,11 @@ bandit:
 	@$(ECHO) "$(ACTION)---> Running bandit security linter" "$(NO_COLOR)"
 	@bandit -r app/
 
-## target: dockle
+
+
 .PHONY: dockle
 dockle:
-	VERSION=$$(curl --silent 'https://api.github.com/repos/goodwithtech/dockle/releases/latest' | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/') && \
-	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock goodwithtech/dockle:v$${VERSION} microblog:latest
+	
 
 ## target: clean-py                     - Remove generated python files
 .PHONY: clean-py

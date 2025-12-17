@@ -4,6 +4,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile_prod
     image: microblog:1.0.0-prod
+    container_name: microblog-prod
     ports:
       - "8000:5000"
     environment:
@@ -17,7 +18,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - microblog-network
+      - app_network
 
   test:
     build:
@@ -34,7 +35,7 @@ services:
     depends_on:
       - mysql-test
     networks:
-      - microblog-network
+      - app_network
 
   mysql:
     image: mysql/mysql-server:5.7
@@ -46,7 +47,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - microblog-network
+      - app_network
 
   mysql-test:
     image: mysql/mysql-server:5.7
@@ -58,12 +59,77 @@ services:
     volumes:
       - mysql-test-data:/var/lib/mysql
     networks:
-      - microblog-network
+      - app_network
+
+  #### BEHÖVER KONFIGURERAS FÖR MONITORING ####
+  node-exporter:
+    image: prom/node-exporter:v1.10.2
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.rootfs=/rootfs"
+      - "--path.sysfs=/host/sys"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
+    ports:
+      - "9100:9100"
+    networks:
+      - monitor
+      - app_network
+  ### BEHÖVER KONFIGURERA PROMETHEUS.YML FILEN!!! ####
+  prometheus:
+    image: prom/prometheus:v3.8.0
+    restart: unless-stopped
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+      - ./rules.yml:/etc/prometheus/rules.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--storage.tsdb.retention.time=24h"
+      - "--web.enable-lifecycle"
+    networks:
+      - monitor
+      - app_network
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    restart: unless-stopped
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - "3000:3000"
+    networks:
+      - monitor
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    restart: unless-stopped
+    ports:
+      - "9093:9093"
+    volumes:
+      - "./alertmanager.yml:/config/alertmanager.yml"
+    command:
+      - "--config.file=/config/alertmanager.yml"
+    networks:
+      - monitor
 
 volumes:
   mysql-data:
   mysql-test-data:
+  prometheus-data: {}
+  grafana-data: {}
 
 networks:
-  microblog-network:
-    driver: bridge
+  monitor:
+  app_network:

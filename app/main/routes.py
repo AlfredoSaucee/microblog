@@ -3,6 +3,7 @@ Contains routes for main purpose of app
 """
 import os
 import socket
+import time
 from datetime import datetime
 from flask import render_template, flash, redirect, url_for, request, current_app
 from flask_login import current_user, login_required
@@ -73,6 +74,16 @@ def version():
     posts = Post.query.order_by(Post.timestamp.desc()).all()
     return render_template('index.html', title='Version', posts=posts, version=deployment_version,
                            hostname=appserver_hostname)
+
+
+@bp.route('/slow')
+def slow():
+    """
+    Route that simulates a slow response
+    """
+
+    time.sleep(5)  # Sleep for 5 seconds to simulate slowness
+    return "Slow response"
 
 
 @bp.route('/user/<username>')

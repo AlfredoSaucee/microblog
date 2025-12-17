@@ -1,0 +1,59 @@
+---
+- name: Copy the docker compose file
+  copy:
+    src: ../docker-compose.yml
+    dest: ./docker-compose.yml
+
+- name: Copy prometheus.yml
+  copy:
+    src: ../prometheus.yml
+    dest: ./prometheus.yml
+
+- name: Copy rules.yml
+  copy:
+    src: ../rules.yml
+    dest: ./rules.yml
+
+- name: Copy grafana.ini
+  copy:
+    src: ../grafana.ini
+    dest: ./grafana.ini
+
+- name: copy alertmanager.yml
+  copy:
+    src: ../alertmanager.yml
+    dest: ./alertmanager.yml
+
+- name: Stop and remove old monitoring containers
+  shell: docker compose down
+  args:
+    chdir: /opt/monitoring
+  become: true
+  ignore_errors: true
+
+- name: Start monitoring stack
+  command: docker compose up -d --build prometheus alertmanager grafana node-exporter
+
+
+- name: Ensure monitoring stack is running
+  command: docker ps
+
+- name: wait for grafana to respond
+  uri:
+    url: http://localhost:3000/api/health
+    status_code: 200
+  register: result
+  retries: 20
+  delay: 5
+  until: result.status == 200
+
+-   name: Add Prometheus 
+    community.grafana.grafana_datasource:
+      name: Prometheus
+      ds_type: prometheus
+      access: proxy
+      url: http://localhost:3000
+      ds_url: http://prometheus:9090
+      grafana_user: admin
+      grafana_password: admin
+      state: present
