@@ -191,7 +191,7 @@ dockle:
 			| sed -E 's/.*"v([^"]+)".*/\1/') \
 		microblog:1.0.0-prod
 
-## target: clean-py                     - Remove generated python files
+## target: clean-py                     - Remove generated python files (comment)
 .PHONY: clean-py
 clean-py:
 	find . -name '*.pyc' -exec rm -f {} +
