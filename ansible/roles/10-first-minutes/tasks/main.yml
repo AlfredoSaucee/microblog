@@ -1,4 +1,15 @@
 ---
+- name: Debug pub_ssh_key_location
+  debug:
+    var: pub_ssh_key_location
+
+- name: Remove problematic repositories
+  shell: |
+    rm -f /etc/apt/sources.list.d/*backports*
+    sed -i '/bullseye-backports/d' /etc/apt/sources.list
+  become: true
+  ignore_errors: true
+
 -   name: Set root password
     user:
         name: root
@@ -18,7 +29,6 @@
         state: latest
         
         
-
 -   name: Copy unattended upgrades 10 settings
     copy:
         mode: "644"
@@ -80,12 +90,12 @@
 -   name: flush handlers to restart SSH
     meta: flush_handlers # we cant do it later because after this we cant ssh as root
 
-# -   name: Only allow user to ssh
-#     lineinfile:
-#         path: /etc/ssh/sshd_config
-#         regexp: "^AllowUsers"
-#         line: "AllowUsers {{ server_user }}"
-#         state: present
+-   name: Only allow user to ssh
+    lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^AllowUsers"
+        line: "AllowUsers {{ server_user }}"
+        state: present
 #     # ignore_errors: yes
 
 -   name: Replace sshd_config with new sshd_config version

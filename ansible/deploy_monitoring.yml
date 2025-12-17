@@ -1,10 +1,11 @@
 ---
 - hosts: monitoring
   become: yes
-  gather_facts: yes
+  become_method: sudo
+  remote_user: deploy
   vars_files:
     - group_vars/all.yml
     - group_vars/vault.yml
-
   roles:
-    - monitoring_instances
+    - install_docker
+    - monitoring_instance
