@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"PersistentVolumeClaim","metadata":{"annotations":{},"name":"mysql-pv-claim","namespace":"default"},"spec":{"accessModes":["ReadWriteOnce"],"resources":{"requests":{"storage":"5Gi"}},"storageClassName":"manual"}}
+    pv.kubernetes.io/bind-completed: "yes"
+    pv.kubernetes.io/bound-by-controller: "yes"
+  creationTimestamp: "2026-01-12T16:02:19Z"
+  deletionGracePeriodSeconds: 0
+  deletionTimestamp: "2026-01-12T16:03:38Z"
+  finalizers:
+  - kubernetes.io/pvc-protection
+  name: mysql-pv-claim
+  namespace: default
+  resourceVersion: "51902"
+  uid: a7f93158-d507-4f1e-81de-5a6b04016fb9
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: manual
+  volumeMode: Filesystem
+  volumeName: mysql-pv-volume
+status:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 5Gi
+  phase: Bound
